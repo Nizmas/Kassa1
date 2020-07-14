@@ -152,7 +152,7 @@
     </Compile>
     <Compile Include="Models\ClientInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UtilCode\Class1.cs" />
+    <Compile Include="UtilCode\Converter.cs" />
     <Compile Include="UtilCode\ImgDeleter.cs" />
     <Compile Include="UtilCode\Replacer.cs" />
   </ItemGroup>

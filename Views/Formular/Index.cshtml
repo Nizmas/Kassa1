@@ -1,0 +1,60 @@
+﻿@model Kassa1.Models.ClientInfo
+
+@{
+    ViewBag.Title = "Kassa #1";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script src="~/Scripts/jquery.validate-vsdoc.js"></script>
+<script src="~/Scripts/jquery.validate.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+
+<div>
+    <h3>Заполнение шаблона документа</h3>
+    @{Html.EnableClientValidation();}
+    @{Html.EnableUnobtrusiveJavaScript();}
+    @using (Html.BeginForm("Create", "Formular", FormMethod.Post, new { encType = "multipart/form-data", @target = "_blank" }))
+    {
+        @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.TextBoxFor(model => model.LastName, htmlAttributes: new { @Placeholder = "Иванов" })
+        @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+
+        <br /><br />
+        @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.TextBoxFor(model => model.FirstName, htmlAttributes: new { @Placeholder = "Иван" })
+        @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+        <br /><br />
+        @Html.LabelFor(model => model.MiddleName, htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.TextBoxFor(model => model.MiddleName, htmlAttributes: new { @Placeholder = "Иванович" })
+        @Html.ValidationMessageFor(model => model.MiddleName, "", new { @class = "text-danger" })
+        <br /><br />
+        @Html.LabelFor(model => model.LoanSum, htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.TextBoxFor(model => model.LoanSum, htmlAttributes: new { @Placeholder = "Иванов" })
+        @Html.ValidationMessageFor(model => model.LoanSum, "", new { @class = "text-danger" })
+        <br /><br />
+        @Html.LabelFor(model => model.BirthDate, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.BirthDate, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.BirthDate, "", new { @class = "text-danger" })
+        </div>
+        <br />
+        @Html.TextBoxFor(model => model.Image, new { type = "file" })
+        @Html.ValidationMessageFor(model => model.Image, "", new { @class = "text-danger" })
+        <br />
+        <div>
+            @Html.DropDownListFor(model => model.TemplateName, ViewBag.Templates as SelectList)
+            @Html.ValidationMessageFor(model => model.TemplateName, "", new { @class = "text-danger" })
+        </div>
+        <br />
+        <div>
+            @Html.DropDownListFor(model => model.FolderName, ViewBag.Folders as SelectList)
+            @Html.ValidationMessageFor(model => model.FolderName, "", new { @class = "text-danger" })
+        </div>
+        <br />
+        <p><input type="submit" value="Отправить" /></p>
+    }
+</div>

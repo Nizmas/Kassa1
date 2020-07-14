@@ -1,0 +1,40 @@
+﻿
+@{
+    ViewBag.Title = "Kassa #1";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/print.min.js"></script>
+
+<div>
+    <h3>Файл сохранён по адресу:</h3>
+    <p>@ViewBag.Path.Remove(0, ViewBag.Path.LastIndexOf("Documents\\"));</p>
+    <button id="loadDoc">Скачать</button>
+    <button id="printDoc">Распечатать</button>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var pathFile = "@ViewBag.Path.Remove(0, ViewBag.Path.LastIndexOf("Documents")).Replace("\\", "\\\\")";
+        $("#loadDoc").click(function (event) {
+            console.log(pathFile);
+            event.preventDefault();
+            const url = "https://localhost:44340/formular/getfile?pathFile=" + pathFile;
+            console.log(url);
+            const dummy = document.createElement('a');
+            dummy.href = url;
+            dummy.download = 'my-filename.ext';
+            document.body.appendChild(dummy);
+            dummy.click();
+        });
+        $("#printDoc").click(function (event) {
+            event.preventDefault();
+            const url = "https://localhost:44340/formular/printfile?pathFile=" + pathFile;
+            printJS({
+                printable: url,
+                type: 'pdf'
+            })
+        });
+    });
+</script>

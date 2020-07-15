@@ -6,9 +6,9 @@ using System.Web;
 
 namespace Kassa1.UtilCode
 {
-    public class ImgDeleter
+    public class Deleter
     {
-        public void Remove (string pathFolder)
+        public void DeleteFiles(string pathFolder)
         {
             DirectoryInfo dirInfo = new DirectoryInfo(pathFolder);
 

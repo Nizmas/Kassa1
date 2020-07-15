@@ -12,12 +12,13 @@
 <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
 <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
 <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+<script src="~/Scripts/print.min.js"></script>
 
 <div>
     <h3>Заполнение шаблона документа</h3>
     @{Html.EnableClientValidation();}
     @{Html.EnableUnobtrusiveJavaScript();}
-    @using (Html.BeginForm("Create", "Formular", FormMethod.Post, new { encType = "multipart/form-data", @target = "_blank" }))
+    @using (Html.BeginForm("Create", "Formular", FormMethod.Post, new { encType = "multipart/form-data", @target = "_blank", @id = "inputForm" }))
     {
         @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label col-md-2" })
         @Html.TextBoxFor(model => model.LastName, htmlAttributes: new { @Placeholder = "Иванов" })
@@ -50,11 +51,31 @@
             @Html.ValidationMessageFor(model => model.TemplateName, "", new { @class = "text-danger" })
         </div>
         <br />
-        <div>
-            @Html.DropDownListFor(model => model.FolderName, ViewBag.Folders as SelectList)
-            @Html.ValidationMessageFor(model => model.FolderName, "", new { @class = "text-danger" })
-        </div>
-        <br />
-        <p><input type="submit" value="Отправить" /></p>
+        <p><input type="submit" value="Скачать" id="downloadDoc"/></p>
     }
+    <button id="printDoc" disabled="disabled">Распечатать</button>
 </div>
+
+<script type="text/javascript">
+    $(document).ready(function () {  
+        var date = new Date();
+        var months = ["января", "февраля", "марта", "апреля", "мая", "июня",
+            "июля", "августа", "сентября", "октября", "ноября", "декабря"];
+        var dateString = date.getDate() + " " + months[date.getMonth()] + " " + date.getFullYear() + " г";
+        $("#printDoc").click(function (event) {
+            var fileName = $("#TemplateName").val().replace(".docx", " ") + $("#FirstName").val() + " " + $("#LastName").val() + " от " + dateString + ".docx";
+            console.log(fileName);
+            event.preventDefault();
+            const url = "https://localhost:44340/formular/printfile?fileName=" + fileName;
+            printJS({
+                printable: url,
+                type: 'pdf'
+            })
+        });
+
+        $("#downloadDoc").click(function (event) {
+            console.log("Работаю");
+            $("#printDoc").prop("disabled", false);
+        });
+    });
+</script>

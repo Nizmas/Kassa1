@@ -40,11 +40,5 @@ namespace Kassa1.Models
         [Display(Name = "Шаблон:")]
         [RegularExpression(@".{1,}docx$", ErrorMessage = "Выберите шаблон")]
         public string TemplateName { get; set; }
-
-        [Display(Name = "Папка:")]
-        [RegularExpression(@"^\\.{1,}", ErrorMessage = "Выберите папку")]
-        public string FolderName { get; set; }
-
-
     }
 }

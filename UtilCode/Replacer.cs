@@ -49,8 +49,8 @@ namespace Kassa1.UtilCode
             document.SaveToFile(pathFile, FileFormat.Docx);
             document.Close();
 
-            ImgDeleter img = new ImgDeleter();
-            img.Remove(imagesFolder);
+            Deleter img = new Deleter();
+            img.DeleteFiles(imagesFolder);
 
             return pathFile;
         }

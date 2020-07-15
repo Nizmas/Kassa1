@@ -12,7 +12,7 @@ namespace Kassa1.UtilCode
             Application appWord = new Application();
             var wordDocument = appWord.Documents.Open(pathDoc);
             wordDocument.ExportAsFixedFormat(parhPdf, WdExportFormat.wdExportFormatPDF);
-
+            wordDocument.Close();
             return parhPdf;
         }
     }

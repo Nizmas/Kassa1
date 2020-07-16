@@ -29,7 +29,7 @@ namespace Kassa1.Controllers
         }
 
         [HttpPost]
-        public Object Create(ClientInfo client)
+        public ActionResult Create(ClientInfo client)
         {
             Random rnd = new Random();
             if (ModelState.IsValid)
@@ -54,11 +54,20 @@ namespace Kassa1.Controllers
                 string pathNewFile = pathOutputFolder + newFileName;
 
                 Replacer repl = new Replacer();
-                string pathReturn = repl.NewDoc(pathTemplate, pathNewFile, client.LastName, client.FirstName, client.MiddleName, client.BirthDate.ToString(), client.LoanSum, imageName);
-                
-                return File(pathReturn, "application/docx", newFileName);
+                repl.NewDoc(pathTemplate, pathNewFile, client.LastName, client.FirstName, client.MiddleName, client.BirthDate.ToString(), client.LoanSum, imageName);
+
+                return Content(@"<body> <script type='text/javascript'>
+                         window.close();
+                       </script> </body> ");
             }
-            return Redirect("Formular/Index");
+            return Redirect("/");
+        }
+        public FileResult GetFile(string fileName)
+        {
+            string file_path = Server.MapPath("~/Documents/" + fileName);
+            string file_type = "application/docx";
+            //string file_name = pathFile.Substring(pathFile.LastIndexOf('\\') + 1);
+            return File(file_path, file_type, fileName);
         }
 
         public FileResult PrintFile(string fileName)

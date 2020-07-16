@@ -15,7 +15,7 @@
 <script src="~/Scripts/print.min.js"></script>
 
 <div>
-    <h3>Заполнение шаблона документа</h3>
+    <h3>Заполнение шаблона документа</h3> <br />
     @{Html.EnableClientValidation();}
     @{Html.EnableUnobtrusiveJavaScript();}
     @using (Html.BeginForm("Create", "Formular", FormMethod.Post, new { encType = "multipart/form-data", @target = "_blank", @id = "inputForm" }))
@@ -42,7 +42,7 @@
             @Html.EditorFor(model => model.BirthDate, new { htmlAttributes = new { @class = "form-control" } })
             @Html.ValidationMessageFor(model => model.BirthDate, "", new { @class = "text-danger" })
         </div>
-        <br />
+        <br /> <br />
         @Html.TextBoxFor(model => model.Image, new { type = "file" })
         @Html.ValidationMessageFor(model => model.Image, "", new { @class = "text-danger" })
         <br />
@@ -51,9 +51,11 @@
             @Html.ValidationMessageFor(model => model.TemplateName, "", new { @class = "text-danger" })
         </div>
         <br />
-        <p><input type="submit" value="Скачать" id="downloadDoc"/></p>
+        <p><input hidden type="submit" value="Скачать" id="createDoc"  /></p>
     }
-    <button id="printDoc" disabled="disabled">Распечатать</button>
+    <button id="getDoc">Скачать</button>
+    <button id="printDoc">Распечатать</button>
+
 </div>
 
 <script type="text/javascript">
@@ -62,20 +64,47 @@
         var months = ["января", "февраля", "марта", "апреля", "мая", "июня",
             "июля", "августа", "сентября", "октября", "ноября", "декабря"];
         var dateString = date.getDate() + " " + months[date.getMonth()] + " " + date.getFullYear() + " г";
-        $("#printDoc").click(function (event) {
-            var fileName = $("#TemplateName").val().replace(".docx", " ") + $("#FirstName").val() + " " + $("#LastName").val() + " от " + dateString + ".docx";
-            console.log(fileName);
+        var action = "";
+        var fileName = "";
+
+        $("#getDoc").click(function (event) {
             event.preventDefault();
-            const url = "https://localhost:44340/formular/printfile?fileName=" + fileName;
-            printJS({
-                printable: url,
-                type: 'pdf'
-            })
+            $("#createDoc").click();
+            action = "get";
+            fileName = $("#TemplateName").val().replace(".docx", " ") + $("#FirstName").val() + " " + $("#LastName").val() + " от " + dateString + ".docx";
         });
 
-        $("#downloadDoc").click(function (event) {
-            console.log("Работаю");
-            $("#printDoc").prop("disabled", false);
+        $("#printDoc").click(function (event) {
+            event.preventDefault();
+            $("#createDoc").click();
+            action = "print";
+            fileName = $("#TemplateName").val().replace(".docx", " ") + $("#FirstName").val() + " " + $("#LastName").val() + " от " + dateString + ".docx";
+        });
+
+        $(window).bind('focus', function () {
+            console.log("focus!");
+            if (action == "print") {
+                console.log(fileName);
+                console.log(action);
+                const url = "https://localhost:44340/formular/printfile?fileName=" + fileName;
+                printJS({
+                    printable: url,
+                    type: 'pdf'
+                })
+                action = "";
+            }
+
+            if (action == "get") {
+                console.log(fileName);
+                console.log(action);
+                const url = "https://localhost:44340/formular/getfile?fileName=" + fileName;
+                const dummy = document.createElement('a');
+                dummy.href = url;
+                dummy.download = 'my-filename.ext';
+                document.body.appendChild(dummy);
+                dummy.click();
+                action = "";
+            }
         });
     });
 </script>

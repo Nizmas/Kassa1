@@ -29,7 +29,7 @@ namespace Kassa1.Controllers
         }
 
         [HttpPost]
-        public ActionResult Create(ClientInfo client)
+        public Object Create(ClientInfo client, string submit)
         {
             Random rnd = new Random();
             if (ModelState.IsValid)
@@ -54,30 +54,29 @@ namespace Kassa1.Controllers
                 string pathNewFile = pathOutputFolder + newFileName;
 
                 Replacer repl = new Replacer();
-                repl.NewDoc(pathTemplate, pathNewFile, client.LastName, client.FirstName, client.MiddleName, client.BirthDate.ToString(), client.LoanSum, imageName);
+                string pathDoc = repl.NewDoc(pathTemplate, pathNewFile, client.LastName, client.FirstName, client.MiddleName, client.BirthDate.ToString(), client.LoanSum, imageName);
+                string nameDoc = pathDoc.Substring(pathDoc.LastIndexOf('\\') + 1);
 
-                return Content(@"<body> <script type='text/javascript'>
-                         window.close();
-                       </script> </body> ");
+                Converter conv = new Converter();
+                string pathPdf = conv.ConvertFile(pathDoc);
+                string namePdf = pathPdf.Substring(pathPdf.LastIndexOf('\\') + 1);
+
+                switch (submit)
+                {
+                    case "Скачать":
+                        return File(pathDoc, "application/docx", nameDoc);
+                    case "Распечатать":
+                        return File(pathPdf.Replace(".pdf", "_.pdf"), "application/pdf", namePdf);
+                }
             }
-            return Redirect("/");
-        }
-        public FileResult GetFile(string fileName)
-        {
-            string file_path = Server.MapPath("~/Documents/" + fileName);
-            string file_type = "application/docx";
-            //string file_name = pathFile.Substring(pathFile.LastIndexOf('\\') + 1);
-            return File(file_path, file_type, fileName);
+            return ("Проверьте правильность введённых данных");
         }
 
         public FileResult PrintFile(string fileName)
         {
-            string doc_path = Server.MapPath("~/Documents/" + fileName);
-            Converter conv = new Converter();
-            string pdf_path = conv.ConvertFile(doc_path);
+            string pdf_path = Server.MapPath("~/Documents/" + fileName);
             string pdf_type = "application/pdf";
-            string pdf_name = pdf_path.Substring(pdf_path.LastIndexOf('\\') + 1);
-            return File(pdf_path, pdf_type, pdf_name);
+            return File(pdf_path, pdf_type, fileName);
         }
     }
 }

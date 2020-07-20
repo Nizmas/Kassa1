@@ -44,7 +44,14 @@
     <h3>Заполнение шаблона документа</h3> <br />
     @{Html.EnableClientValidation();}
     @{Html.EnableUnobtrusiveJavaScript();}
-    @using (Html.BeginForm("Create", "Formular", FormMethod.Post, new { encType = "multipart/form-data", @id = "myform", name = "myform2" }))
+
+    @*@using (Html.BeginForm("Create", "Formular", FormMethod.Post, new { encType = "multipart/form-data", @id = "myform", name = "myform2" }))*@
+    @using (Ajax.BeginForm("Create", new AjaxOptions
+        {
+            UpdateTargetId = "results",
+            LoadingElementId = "loading",
+            LoadingElementDuration = 1000
+        }))
     {
         @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label col-md-2" })
         @Html.TextBoxFor(model => model.LastName, htmlAttributes: new { @Placeholder = "Иванов" })
@@ -80,7 +87,10 @@
         <p><input type="submit" name="submit" value="Скачать" id="createDoc" /></p>
         <p><input type="submit" name="submit" value="Распечатать" id="createDoc" /></p>
     }
-
+    <div id="loading" style="display:none; color:Red; font-weight:bold;">
+        <p>Идет загрузка...</p>
+    </div>
+    <div id="results"></div>
 </div>
 
 <script type="text/javascript">

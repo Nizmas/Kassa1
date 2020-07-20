@@ -152,8 +152,10 @@
     </Compile>
     <Compile Include="Models\ClientInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UtilCode\Error.cs" />
     <Compile Include="UtilCode\Converter.cs" />
     <Compile Include="UtilCode\Deleter.cs" />
+    <Compile Include="UtilCode\ModelStateExtensions.cs" />
     <Compile Include="UtilCode\Replacer.cs" />
   </ItemGroup>
   <ItemGroup>

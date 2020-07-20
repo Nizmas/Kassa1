@@ -6,7 +6,6 @@ namespace Kassa1.Models
 {
     public class ClientInfo
     {
-        
         [Display(Name = "Фамилия:")]
         [Required(ErrorMessage = "Обязательное поле")]
         [RegularExpression("^([А-Я]|Ё){1}([а-я]|ё){1,29}$" , ErrorMessage = "Некорректная фамилия")]
@@ -26,7 +25,7 @@ namespace Kassa1.Models
         [Required(ErrorMessage = "Обязательное поле")]
         //[Range(typeof(DateTime), "01.02.1910", "03.04.2002")]
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd'.'MM'.'yyyy}", ApplyFormatInEditMode = true)]
+        //[DisplayFormat(DataFormatString = "{0:dd'.'MM'.'yyyy}", ApplyFormatInEditMode = true)]
         public DateTime BirthDate { get; set; }
 
         [Display(Name = "Сумма займа:")]

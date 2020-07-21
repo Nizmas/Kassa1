@@ -61,23 +61,21 @@ namespace Kassa1.Controllers
                 string pathPdf = conv.ConvertFile(pathDoc);
                 string namePdf = pathPdf.Substring(pathPdf.LastIndexOf('\\') + 1);
 
-                return (namePdf);
-                /*switch (submit)
+                switch (submit)
                 {
                     case "Скачать":
-                        return File(pathDoc, "application/docx", nameDoc);
+                        return (nameDoc);
                     case "Распечатать":
-                        return File(pathPdf.Replace(".pdf", "_.pdf"), "application/pdf", namePdf);
-                }*/
+                        return (namePdf);
+                }
             }
             //set error status
-            //Response.StatusCode = 400;
+            Response.StatusCode = 400;
             // Important for live environment.
-            //Response.TrySkipIisCustomErrors = true;
+            Response.TrySkipIisCustomErrors = true;
 
             IEnumerable<Error> modelErrors = ModelState.AllErrors(); // <<<<<<<<< SEE HERE
-            return (modelErrors);
-            //return Json(client.BirthDate + client.FirstName + client.LastName + client.LoanSum + client.MiddleName + client.TemplateName );
+            return Json(modelErrors);
         }
 
         public FileResult PrintFile(string fileName)
@@ -86,10 +84,12 @@ namespace Kassa1.Controllers
             string pdf_type = "application/pdf";
             return File(pdf_path, pdf_type, fileName);
         }
+
+        public FileResult GetFile(string fileName)
+        {
+            string doc_path = Server.MapPath("~/Documents/" + fileName);
+            string doc_type = "application/docx";
+            return File(doc_path, doc_type, fileName);
+        }
     }
-
-
-
-
-
 }

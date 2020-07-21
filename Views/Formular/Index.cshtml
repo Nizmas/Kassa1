@@ -15,43 +15,52 @@
 <script src="~/Scripts/print.min.js"></script>
 
 <script type="text/javascript">
-    function printFile() {
-        //event.preventDefault();
-        //document.forms["myform"].submit();
-        document.myform2.submit();
-        var date = new Date();
-        var months = ["января", "февраля", "марта", "апреля", "мая", "июня",
-            "июля", "августа", "сентября", "октября", "ноября", "декабря"];
-        var dateString = date.getDate() + " " + months[date.getMonth()] + " " + date.getFullYear() + " г";
-        var fileName = $("#TemplateName").val().replace(".docx", " ") + $("#FirstName").val() + " " + $("#LastName").val() + " от " + dateString + ".docx";
-        console.log(fileName)
-        const url = "https://localhost:44306/formular/printfile?fileName=" + fileName;  
-        printJS({
-            printable: url,
-            type: 'pdf'
-        });
-    };
-</script>
-
-<script type="text/javascript">
-    function sform() {
-        document.forms["myform"].submit();
-        console.log('huy')
+    function OnSuccess(data) {
+        $("#results").html("");
+        url = "https://localhost:44340/formular/printfile?fileName=" + data;
+        if (data.includes('docx')) {
+            console.log("Это же docx");
+            const dummy = document.createElement('a');
+            dummy.href = url;
+            dummy.download = 'my-filename.ext';
+            document.body.appendChild(dummy);
+            dummy.click();
+        }
+        if (data.includes('pdf')) {
+            console.log("Это же Pdf"); 
+            printJS({
+                printable: url,
+                type: 'pdf'
+            })
+        }
+    }
+    function OnFailure(request, error) {
+        var response = JSON.parse(request.responseText);
+        for (var i = 0; i < response.length; i++) {
+            var error = response[i];
+            var fieldKey = error.Key;
+            var message = error.Message;
+            console.log(fieldKey + ': ' + message);
+            var errorMsg = errorMsg + fieldKey + ': ' + message + '\r\n';
+        }
+        $("#results").html(errorMsg);
     }
 </script>
+
 
 <div>
     <h3>Заполнение шаблона документа</h3> <br />
     @{Html.EnableClientValidation();}
     @{Html.EnableUnobtrusiveJavaScript();}
 
-    @*@using (Html.BeginForm("Create", "Formular", FormMethod.Post, new { encType = "multipart/form-data", @id = "myform", name = "myform2" }))*@
-    @using (Ajax.BeginForm("Create", new AjaxOptions
-        {
-            UpdateTargetId = "results",
-            LoadingElementId = "loading",
-            LoadingElementDuration = 1000
-        }))
+    @using (Ajax.BeginForm("Create", null, new AjaxOptions
+    {
+        UpdateTargetId = "results",
+        LoadingElementId = "loading",
+        LoadingElementDuration = 1000,
+        OnFailure = "OnFailure",
+        OnSuccess = "OnSuccess"
+    }, new { enctype = "multipart/form-data" }))
     {
         @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label col-md-2" })
         @Html.TextBoxFor(model => model.LastName, htmlAttributes: new { @Placeholder = "Иванов" })
@@ -88,42 +97,7 @@
         <p><input type="submit" name="submit" value="Распечатать" id="createDoc" /></p>
     }
     <div id="loading" style="display:none; color:Red; font-weight:bold;">
-        <p>Идет загрузка...</p>
+        <p>Формирование документа...</p>
     </div>
     <div id="results"></div>
 </div>
-
-<script type="text/javascript">
-    $(document).ready(function () {
-        var date = new Date();
-        var months = ["января", "февраля", "марта", "апреля", "мая", "июня",
-            "июля", "августа", "сентября", "октября", "ноября", "декабря"];
-        var dateString = date.getDate() + " " + months[date.getMonth()] + " " + date.getFullYear() + " г";
-        var url = "";
-
-        var target = "";
-            $(':input').focus(function () {
-                target = $(this).val();
-            });
-
-        $("#myform").submit(function (event) {
-            if (target == "Скачать") console.log("Скачать");
-
-            if (target == "Распечатать") {
-                console.log("Распечатать");
-                fileName = $("#TemplateName").val().replace(".docx", " ") + $("#FirstName").val() + " " + $("#LastName").val() + " от " + dateString + ".pdf";
-                console.log(fileName)
-                url = "https://localhost:44340/formular/printfile?fileName=" + fileName;
-                window.setTimeout(Printer, 4000); 
-            }
-        });
-
-        function Printer() {
-            console.log("Printing has been launched");
-            printJS({
-                printable: url,
-                type: 'pdf'
-            })
-        }
-    });
-</script>

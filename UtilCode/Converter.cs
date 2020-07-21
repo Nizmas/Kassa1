@@ -1,5 +1,4 @@
 ﻿using Microsoft.Office.Interop.Word;
-using System.IO;
 
 namespace Kassa1.UtilCode
 {
@@ -14,7 +13,6 @@ namespace Kassa1.UtilCode
             var wordDocument = appWord.Documents.Open(pathDoc);
             wordDocument.ExportAsFixedFormat(pathPdf, WdExportFormat.wdExportFormatPDF);
             wordDocument.Close();
-            File.Copy(pathPdf, pathPdf.Replace(".pdf", "_.pdf"), true);
             return pathPdf;
         }
     }
